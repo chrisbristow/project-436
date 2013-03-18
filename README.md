@@ -48,10 +48,10 @@ which sent the broadcast.  Once the Server responds with the configuration
 monitoring.  This monitoring consists of:
 
 - Reading and pattern-matching in log files.  Matching can:
-  o Return the actual line matched.
-  o Return a configured string.
-  o Return a count of matches within a specific period.
-  o Return a string if no matches are found within a specific period.
+  - Return the actual line matched.
+  - Return a configured string.
+  - Return a count of matches within a specific period.
+  - Return a string if no matches are found within a specific period.
 - Checking for processes not running, or too many instances of a
   process running.
 
