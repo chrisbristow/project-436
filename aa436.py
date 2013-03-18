@@ -1,6 +1,16 @@
 # aa436.py
 #
-#
+# This is the Agent for Project 436.  An instance of aa436.py runs
+# on every host to be monitored.  After an aa436.py Agent is started it will:
+# - Listen for UDP "I am here" broadcast notifications from ax436.py Servers.
+# - Request configuration from the first ax436.py Server that it finds.
+# - Commence monitoring for:
+#   o Pattern matches in log files.
+#   o Processes not running.
+#   o System resource limit breaches (eg. disk space, inode usage, memory, load)
+# - The aa436.py Agent will send regular heartbeat messages to the ax436.py Server
+#   (if idle).
+# - Reset and re-load its configuration if told to do so by the ax436.py Server.
 
 # Copyright (c) 2013, Chris Bristow
 # All rights reserved.
@@ -47,6 +57,8 @@ from socket import *
 
 
 # Globals:
+# This list includes shared lists of log files to check, processes to monitor,
+# the queue of updates to sent to the server etc.
 
 file_consumer_list = []
 host_name = os.uname()[1]
@@ -61,7 +73,7 @@ logger = logging.getLogger(__name__)
 
 
 # Return True if current time is within range
-# given in active_string.
+# given in active_string (format: day_numbers;HH:MM-HH:MM, ...).
 
 def is_active(active_string):
   if(len(active_string) == 0):
@@ -127,6 +139,8 @@ class file_consumer:
 
 
 
+  # Logs when a file consumer is closed down - this happens when
+  # an aa436.py Agent receives a Reset command from the ax436.py Server.
 
   def __del__(self):
     self.fd.close()
@@ -134,8 +148,11 @@ class file_consumer:
 
 
 
-  # Checks to see if any of the "periodic" (eg. activity, metric) file events
-  # need to be raised.
+  # Checks to see if any of the "periodic" file events
+  # need to be raised.  Examples of periodic events for files are:
+  # - A count of the number of matches of a set of strings within a time period.
+  # - An event raised if no instances of a specified string have appeared in a
+  #   log file within a time period.
 
   def check_period(self):
     if(self.period > 0):
@@ -161,7 +178,7 @@ class file_consumer:
 
   # The main program calls read() for each file tracker.  Returns
   # a list of events from the do_read() function if within an active
-  # time.
+  # time, otherwise returns an empty list.
 
   def read(self):
     if(is_active(self.active) == True):
@@ -173,7 +190,8 @@ class file_consumer:
 
 
 
-  # Read from files.
+  # This function does the actual file reading.  Logic to deal with
+  # log files "rolling" is contained here.
 
   def do_read(self):
     global logger
@@ -236,7 +254,8 @@ class file_consumer:
 
 
 
-# Process configuration from ax436.
+# This function is called when an aa436.py Agent first receives configuation
+# from an ax436.py Agent.
 
 def do_config(conf):
   global file_consumer_list
@@ -370,7 +389,8 @@ def do_config(conf):
 
 
 
-# Reset all configuration
+# This function is called to erase all current configuration if the aa436.py Agent is
+# sent a Reset command by the ax436.py Server.
 
 def do_unconfig():
   global logger
@@ -390,8 +410,9 @@ def do_unconfig():
 
 
 
-# Add an alert to the alert queue.  Assigns a unique (for this host)
-# alert id.
+# This function is called to add a new alert to the alert queue.
+# Alerts are sent to the ax436.py Server one by one.  Each has
+# to be acknowleged before the next is sent.
 
 def queue_alert(alert):
   global uid_seed
@@ -411,7 +432,9 @@ def queue_alert(alert):
 
 
 
-# Main program loop.
+# This is the main program loop.  UDP sockets are initialised and then
+# a loop is entered which invokes log file checks, process checks etc.
+# as well as receiving commands from the ax436.py Server.
 
 def main(port):
   global process_list
@@ -562,7 +585,8 @@ def main(port):
 
 
 
-# Launch from here.
+# Start hook.  The only argument an aa436.py Agent takes is the UDP
+# port to listen for broadcasts from the ax436.py Server on.
 
 if __name__ == '__main__':
   if len(sys.argv) < 2:
