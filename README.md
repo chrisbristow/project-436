@@ -6,7 +6,7 @@ TBC
 
 Licence
 -------
-Copyright (c) <YEAR>, <OWNER>
+Copyright (c) 2013, Chris Bristow
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
