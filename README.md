@@ -60,7 +60,15 @@ monitoring.  This monitoring consists of:
   - Filesystem usage (free space and / or inode usage).
   - Load average.
   - Free memory.
+- Commands run can generate events (based on thresholds), or report
+  metrics.
 
-Getting Up and Running
-----------------------
+If an aa436.py Agent's configuration needs to be changed, it can be
+instructed to discard it's current configuration by sending it a "Reset"
+message.  The ax436.py Server does this if it detects that a configuration
+file has been updated.  Once the aa436.py Agent has discarded it's
+configuration, it requests it's configuration once again from the Server.
+
+Quick Start
+-----------
 Coming soon ....
