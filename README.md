@@ -62,6 +62,9 @@ monitoring.  This monitoring consists of:
   - Free memory.
 - Commands run can generate events (based on thresholds), or report
   metrics.
+- All monitoring operations can be provided with set of times when
+  they should be "active".  This can be used, for instance, to ignore
+  events that may be invoked during a system's maintenance period.
 
 If an aa436.py Agent's configuration needs to be changed, it can be
 instructed to discard it's current configuration by sending it a "Reset"
