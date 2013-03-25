@@ -86,17 +86,53 @@ which contains the following directives:
 - hosts:           Folder in which to find agent host configuration files.
 - includes:        Folder in which to find agent include configuration files.
 
-For example:
+For example, create a file, ax436.conf, containing:
 
-event_stream:     ax436_event_stream.log
+  event_stream:     ax436_event_stream.log
 
-port:             9000
+  port:             9000
 
-broadcast:        10.10.10.255
+  broadcast:        10.10.10.255
 
-hosts:            hosts_436
+  hosts:            hosts_436
 
-includes:         includes_436
+  includes:         includes_436
+
+Next, start the ax436.py Server as follows (specifying ax436conf as the Server configuration file):
+
+  python ax436.py ax436.conf
+  
+The Server will write:
+
+- General log information to ax436.log
+- A stream of incoming events to ax436_event_stream.log
+ 
+On each host where an aa436.py Agent process needs to run, place the aa436.py
+Agent program and start it up as follows (specifying it's UDP comms port, in this case 9000):
+
+  python aa436.py 9000
+
+The Agent process will write a log to aa436.log.  Note that both the Server and Agent restrict
+their log output using fixed-size rolling log files.
+
+At this point, Agents have no configuration files, so will not be actively monitoring.  To enable
+monitoring, a configuration file for each Agent will need to be created in the "hosts:"
+folder (in this example, the "hosts_436" folder) on the host running the ax436.py Server.
+
+Agent configuration directives are placed in groups within the file, with each group
+capable of generating one or more events.
+
+The directives which can be added to an Agent configuration file are shown below:
+
+- file: - specifies a log file to follow.
+- match: - specifies a pattern to be matched in a log file.
+- alert_all: - generate an event if any patterns in a file match - the event contains the log file
+  line which matched, or overridden with a specific message.
+- alert_n: - generate an event if more then a specific number of pattern-matches occur within a
+  specified time period.
+
+
+
 
 
 -----------------
