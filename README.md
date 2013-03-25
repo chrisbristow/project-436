@@ -74,7 +74,17 @@ configuration, it requests it's configuration once again from the Server.
 
 Quick Start
 -----------
-Coming soon ....
+The following is a quick guide to getting up-and-running with 436.
+
+Firstly, place the ax436.py program in a folder on the host which will
+act as a Server.  The ax436.py Server also requires a configuration file
+which contains the following directives:
+
+- event_stream:    [event_stream_log_file_name]
+- port:            [udp_port_for_server_to_agent_comms]
+- broadcast:       [ip_address_to_broadcast
+
+broadcast:
 
 
 include:           macosx_generic
