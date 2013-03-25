@@ -80,11 +80,22 @@ Firstly, place the ax436.py program in a folder on the host which will
 act as a Server.  The ax436.py Server also requires a configuration file
 which contains the following directives:
 
-- event_stream:    [event_stream_log_file_name]
-- port:            [udp_port_for_server_to_agent_comms]
-- broadcast:       [ip_address_to_broadcast
+- event_stream:    Incoming events are written to this file.
+- port:            UDP port to broadcast to / respond to agents.
+- broadcast:       Broadcast address to use for "i_am_here" notifications.
+- hosts:           Folder in which to find agent host configuration files.
+- includes:        Folder in which to find agent include configuration files.
 
-broadcast:
+For example:
+
+event_stream:     ax436_event_stream.log
+port:             9000
+broadcast:        10.10.10.255
+hosts:            hosts_436
+includes:         includes_436
+
+
+-----------------
 
 
 include:           macosx_generic
