@@ -89,9 +89,13 @@ which contains the following directives:
 For example:
 
 event_stream:     ax436_event_stream.log
+
 port:             9000
+
 broadcast:        10.10.10.255
+
 hosts:            hosts_436
+
 includes:         includes_436
 
 
