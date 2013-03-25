@@ -120,9 +120,13 @@ monitoring, a configuration file for each Agent will need to be created in the "
 folder (in this example, the "hosts_436" folder) on the host running the ax436.py Server.
 
 Agent configuration directives are placed in groups within the file, with each group
-capable of generating one or more events.
+capable of generating one or more events.  All events have "tags" associated with them
+which event-processing applications can use to link events to systems / services, determine
+priorities etc.  Tags are just strings (cannot contain spaces).
 
 The directives which can be added to an Agent configuration file are shown below:
+
+For file pattern matching:
 
 - file: - specifies a log file to follow.
 - match: - specifies a pattern to be matched in a log file.
@@ -130,20 +134,53 @@ The directives which can be added to an Agent configuration file are shown below
   line which matched, or overridden with a specific message.
 - alert_n: - generate an event if more then a specific number of pattern-matches occur within a
   specified time period.
+- alert_count: - generate an event containing a count of all matches within a specified time period.
+- alert_inactive: - generate an event if no matches occur within a specified time period.
 
+For process monitoring (the process table is checked every 40 seconds):
 
+- process: - specifies a process name to monitor.
+- alert_running: - specify the minimum and maximum instances, plus a message to log if the instance
+  count is outside those bounds.
+- ps_command: - specifies the command to use to obtain the process list (this is specified once per Agent).
 
+For running other commands (eg. for disk space, inode usage, memory or load monitoring).  Commands
+are run every 60 seconds:
 
+- run: - specifies a command to run and text to extract from the command's output.
+- alert_if: - generate an event if a metric within a command's output exceeds or falls short of a
+  specified limit.
+- alert_metric: - generate a metric event each time the command is run (every 60 seconds).
 
------------------
+Generic directives:
 
+- include: - include the contents of the specified file (from the "includes:" folder) in the configuration
+  sent to an Agent.
+- active: - specify that a monitoring directive should only produce events within a specific range of times.
+  the format is a set of comma-separated strings, one for each day/time range.  Each string looks like:
+  [day_of_week];HH:MM-HH:MM
+  Eg, 0123456;12:00-14:00 means events will be generated between 12:00 and 14:00 any day of the week.
+  06;09:00-17:00 means events will be generated between 09:00 and 17:00 on Saturdays and Sundays only.
 
-include:           macosx_generic
+Below are some examples of how Agent configuration directives can be used:
+
+This generates an event for each line in test.log which contains the strings "pattern" or "two".  The
+event contains the actual line in test.log which matched:
 
 file:              test.log
-match:             bananas
-active:            0123456;06:00-22:00,1;22:30-23:59
-alert_all:         tags=TAG1  message=109 u
+match:             pattern
+match:             two
+alert_all:         tags=TESTING,FILES,LOW_PRIORITY
+
+This generates an event for each line in test.log which contains the strings "pattern" or "two".  The
+event contains the string "Got It":
+
+file:              test.log
+match:             pattern
+match:             two
+alert_all:         tags=TESTING,FILES,LOW_PRIORITY  message=Got It
+
+
 
 file:              test.log
 match:             \d+
