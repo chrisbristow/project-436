@@ -168,22 +168,16 @@ This generates an event for each line in test.log which contains the strings "pa
 event contains the actual line in test.log which matched:
 
 file:              test.log
-
 match:             pattern
-
 match:             two
-
 alert_all:         tags=TESTING,FILES,LOW_PRIORITY
 
 This generates an event for each line in test.log which contains the strings "pattern" or "two".  The
 event contains the string "Got It":
 
 file:              test.log
-
 match:             pattern
-
 match:             two
-
 alert_all:         tags=TESTING,FILES,LOW_PRIORITY  message=Got It
 
 
