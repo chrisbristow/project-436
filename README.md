@@ -162,35 +162,5 @@ Generic directives:
   Eg, 0123456;12:00-14:00 means events will be generated between 12:00 and 14:00 any day of the week.
   06;09:00-17:00 means events will be generated between 09:00 and 17:00 on Saturdays and Sundays only.
 
-Below are some examples of how Agent configuration directives can be used:
-
-This generates an event for each line in test.log which contains the strings "pattern" or "two".  The
-event contains the actual line in test.log which matched:
-
-file:              test.log
-
-match:             pattern
-
-match:             two
-
-alert_all:         tags=TESTING,FILES,LOW_PRIORITY
-
-This generates an event for each line in test.log which contains the strings "pattern" or "two".  The
-event contains the string "Got It":
-
-file:              test.log
-
-match:             pattern
-
-match:             two
-
-alert_all:         tags=TESTING,FILES,LOW_PRIORITY  message=Got It
-
-The following generates an event every 30 seconds which contains the number of
-times the string "pattern" is matched within the last 30 seconds:
-
-file:              test.log
-
-match:             pattern
-
-alert_count:       tags=TESTING,FILES,METRIC  seconds=30
+Directives are used in groups in order to define indicators to spot and actions to take.  The file
+"example.config" contains examples of how to use the directives.
