@@ -168,66 +168,29 @@ This generates an event for each line in test.log which contains the strings "pa
 event contains the actual line in test.log which matched:
 
 file:              test.log
+
 match:             pattern
+
 match:             two
+
 alert_all:         tags=TESTING,FILES,LOW_PRIORITY
 
 This generates an event for each line in test.log which contains the strings "pattern" or "two".  The
 event contains the string "Got It":
 
 file:              test.log
+
 match:             pattern
+
 match:             two
+
 alert_all:         tags=TESTING,FILES,LOW_PRIORITY  message=Got It
 
-
-
-
-
-
------------------------
+The following generates an event every 30 seconds which contains the number of
+times the string "pattern" is matched within the last 30 seconds:
 
 file:              test.log
-match:             \d+
-alert_all:         tags=NUM1
 
-file:              test.log
-match:             the big one
-alert_n:           tags=EVERY  threshold=2  seconds=10  message=too many matches
+match:             pattern
 
-#file:              test.log
-#match:             count it
-#alert_count:       tags=COUNT  seconds=10
-
-#file:              test.log
-#match:             .
-#alert_inactive:    tags=INACTIVE  seconds=10  message=too quiet
-
-#file:              notfound.log
-#match:             .
-#alert_all:         tags=NOTFOUND_TEST
-
-ps_command:        ps -fe
-
-process:           vzxhead
-active:            0123456;00:00-23:59
-alert_running:     tags=PROCESS  min=0  max=0  message=Incorrect number of VZXs running
-
-process:           /Applications/Minecraft.app/Contents/MacOS/JavaApplicationStub
-alert_running:     tags=MINECRAFT  min=1  max=1  message=Minecraft is no longer running
-
-#process:           /sbin/launchd
-#alert_running:     tags=LAUNCHD  min=5  max=20  message=A minimum of five launchd processes should be running
-
-#run:               command=df -i  extract=\s+([0-9\.]+)%\s+\d+\s+\d+\s+([0-9\.]+)%\s+(\S+)
-#alert_if:          tags=FS  match=3,/  upper_limit=1,95  message=Filesystem / exceeded 95 pct space utilisation
-#alert_if:          tags=FS  match=3,/  upper_limit=2,95  message=Filesystem / has used over 95 pct of its inodes
-#alert_metric:      tags=FS_MET  match=3,/  metric=1
-
-run:               command=uptime  extract=(\S+) averages:\s+([0-9\.]+)\s+
-alert_if:          tags=LOAD  match=1,load  upper_limit=2,4  message=Load average is over 4
-active:            0123456;00:00-21:00
-alert_metric:      tags=LOAD_MET  match=1,load  metric=2
-
-run:               command=vm_stat  extract=(\S+) free:\s+(\d+)
-alert_metric:      tags=MEM  match=1,Pages  metric=2
+alert_count:       tags=TESTING,FILES,METRIC  seconds=30
