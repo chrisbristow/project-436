@@ -164,3 +164,9 @@ Generic directives:
 
 Directives are used in groups in order to define indicators to spot and actions to take.  The file
 "example.config" contains examples of how to use the directives.
+
+Updates
+-------
+15-Sept-2015:
+
+- Updated ax436.py and aa436.py to work with Python 3 (tested with 3.4).

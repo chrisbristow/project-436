@@ -89,7 +89,7 @@ def is_active(active_string):
       if tmt:
         if(((ltm[3] * 60) + ltm[4]) >= ((int(tmt.group(2)) * 60) + int(tmt.group(3))) and ((ltm[3] * 60) + ltm[4]) <= ((int(tmt.group(4)
 ) * 60) + int(tmt.group(5)))):
-          if(string.find(tmt.group(1), str(ltm[6])) > -1):
+          if(tmt.group(1).find(str(ltm[6])) > -1):
             actv = True
 
   return(actv)
@@ -271,7 +271,7 @@ def do_config(conf):
 
   logger.info('Configuration received from server')
 
-  for cl in string.split(conf,'%%'):
+  for cl in conf.split('%%'):
     m = re.match('^([a-z_:]+)\s+(.+)\s*$', cl)
 
     if m:
@@ -476,7 +476,7 @@ def main(port):
 
     for rs in readable:
       udp_data = rs.recv(65536)
-      m = re.match('^([A-Z]+)%%(.+)', udp_data)
+      m = re.match('^([A-Z]+)%%(.+)', udp_data.decode())
 
       if m:
         cmd = m.group(1)
@@ -512,7 +512,7 @@ def main(port):
     if(configured == False and len(server_name) > 0 and time.time() > (last_config_req + 10)):
       last_config_req = time.time()
       logger.info('Requesting configuration from '+server_name+' on port '+str(port+1))
-      ad_sock.sendto('CONFREQ%%'+os.uname()[1], (server_name, port+1))
+      ad_sock.sendto(('CONFREQ%%'+os.uname()[1]).encode(), (server_name, port+1))
       last_update = time.time()
 
     if(server_seen > 0 and time.time() > (last_update + idle_time) and len(alert_queue) < 3):
@@ -529,7 +529,7 @@ def main(port):
       for zeroing_idx in range(len(process_list)):
         process_list[zeroing_idx]['count'] = 0
 
-      for ps_line in string.split(ps_output, '\n'):
+      for ps_line in ps_output.decode().split('\n'):
         for watching_idx in range(len(process_list)):
           pm = re.search(process_list[watching_idx]['match'], ps_line)
 
@@ -553,7 +553,7 @@ def main(port):
 
     if(time.time() > next_stats_check):
       for run_cmd in cmd_list:
-        for cmd_output_line in string.split(subprocess.check_output(run_cmd['command']), '\n'):
+        for cmd_output_line in subprocess.check_output(run_cmd['command']).decode().split('\n'):
           c_ext = re.search(run_cmd['extract'], cmd_output_line)
 
           if c_ext:
@@ -578,7 +578,7 @@ def main(port):
 
     if(len(alert_queue) > 0):
       if(int(time.time()) > alert_queue[0][2]):
-        ad_sock.sendto('ALERT%%'+host_name+'%%'+alert_queue[0][0]+'%%'+str(alert_queue[0][3])+'%%'+alert_queue[0][1], (server_name, port+1))
+        ad_sock.sendto(('ALERT%%'+host_name+'%%'+alert_queue[0][0]+'%%'+str(alert_queue[0][3])+'%%'+alert_queue[0][1]).encode(), (server_name, port+1))
         alert_queue[0][2] = int(time.time()) + 10
         last_update = time.time()
 
@@ -590,7 +590,7 @@ def main(port):
 
 if __name__ == '__main__':
   if len(sys.argv) < 2:
-    print 'Usage: aa436.py udp_port'
+    print('Usage: aa436.py udp_port')
     exit(1)
 
   else:

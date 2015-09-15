@@ -191,7 +191,7 @@ def main(conf_file):
 
     # Broadcast an "I am here" heartbeat message.
     if(time.time() > next_i_am_here):
-      ad_sock.sendto('SRVHB%%'+os.uname()[1], send_addr)
+      ad_sock.sendto(('SRVHB%%'+os.uname()[1]).encode(), send_addr)
       next_i_am_here = time.time() + i_am_here_interval
 
     # Scan the host configuration folder for changes.
@@ -220,7 +220,7 @@ def main(conf_file):
 
 if __name__ == '__main__':
   if len(sys.argv) < 2:
-    print 'Usage: ax436.py configuration_file'
+    print('Usage: ax436.py configuration_file')
     exit(1)
 
   else:
