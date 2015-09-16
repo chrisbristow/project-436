@@ -138,7 +138,7 @@ def main(conf_file):
 
     for rs in readable:
       ( udp_data, from_addr ) = rs.recvfrom(65536)
-      m = re.match('^([A-Z]+)%%(.+)', udp_data)
+      m = re.match('^([A-Z]+)%%(.+)', udp_data.decode())
 
       if m:
         cmd = m.group(1)
@@ -175,7 +175,7 @@ def main(conf_file):
 
             logger.info('Sending configuration for '+arg+' on port '+str(port))
   
-            ad_sock.sendto('CONFIG%%'+clines, (from_addr[0], port))
+            ad_sock.sendto(('CONFIG%%'+clines).encode(), (from_addr[0], port))
 
           except IOError:
             logger.info('Error: Unable to return configuration for host '+arg)
@@ -183,8 +183,8 @@ def main(conf_file):
         # Respond to an Event sent to the Server by an Agent.
         elif(cmd == 'ALERT'):
           event_logger.info(time.ctime()+'%%'+arg)
-          ss = string.split(arg,'%%')
-          ad_sock.sendto('ACK%%'+ss[1], (from_addr[0], port))
+          ss = arg.split('%%')
+          ad_sock.sendto(('ACK%%'+ss[1]).encode(), (from_addr[0], port))
 
           if(ss[0] in scan_hash):
             scan_hash[ss[0]]['agent_seen'] = int(time.time())
@@ -206,7 +206,7 @@ def main(conf_file):
         elif(scan_hash[sh]['mtime'] != int(sst.st_mtime)):
           logger.info('Host configuration '+sh+' has been updated')
           scan_hash[sh]['mtime'] = int(sst.st_mtime)
-          ad_sock.sendto('RESET%%'+sh, send_addr)
+          ad_sock.sendto(('RESET%%'+sh).encode(), send_addr)
 
         if((int(time.time()) - scan_hash[sh]['agent_seen']) > max_idle_time):
           event_logger.info(time.ctime()+'%%'+sh+'%%000000%%'+str(int(time.time()))+'%%SYSTEM%%NULL%%Host is inactive')

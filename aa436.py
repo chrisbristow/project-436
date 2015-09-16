@@ -100,7 +100,7 @@ def is_active(active_string):
 # tracking configuration.
 
 class file_consumer:
-  def __init__(self, filename, matches, actions):
+  def __init__(self, filename, matches, actions, exceeds):
     global logger
 
     self.open = False
@@ -291,13 +291,13 @@ def do_config(conf):
         am = re.match('^tags=(\S+)\s+message=(.+)\s*$', arg)
 
         if am:
-          file_consumer_list += [ file_consumer(c_file, c_match, { 'tags': am.group(1), 'message': am.group(2), 'active': c_active }) ]
+          file_consumer_list += [ file_consumer(c_file, c_match, { 'tags': am.group(1), 'message': am.group(2), 'active': c_active }, '') ]
 
         else:
           am2 = re.match('^tags=(\S+)\s*$', arg)
 
           if am2:
-            file_consumer_list += [ file_consumer(c_file, c_match, { 'tags': am2.group(1), 'active': c_active }) ]
+            file_consumer_list += [ file_consumer(c_file, c_match, { 'tags': am2.group(1), 'active': c_active }, '') ]
 
         c_file = ''
         c_match = []
@@ -307,7 +307,7 @@ def do_config(conf):
         am = re.match('^tags=(\S+)\s+threshold=(\d+)\s+seconds=(\d+)\s+message=(.+)\s*$', arg)
 
         if am:
-          file_consumer_list += [ file_consumer(c_file, c_match, { 'tags': am.group(1), 'threshold': am.group(2), 'period': am.group(3), 'message': am.group(4), 'active': c_active }) ]
+          file_consumer_list += [ file_consumer(c_file, c_match, { 'tags': am.group(1), 'threshold': am.group(2), 'period': am.group(3), 'message': am.group(4), 'active': c_active }, '') ]
 
         c_file = ''
         c_match = []
@@ -317,7 +317,7 @@ def do_config(conf):
         am = re.match('^tags=(\S+)\s+seconds=(\d+)\s*$', arg)
 
         if am:
-          file_consumer_list += [ file_consumer(c_file, c_match, { 'tags': am.group(1), 'period': am.group(2), 'metric': '1', 'active': c_active }) ]
+          file_consumer_list += [ file_consumer(c_file, c_match, { 'tags': am.group(1), 'period': am.group(2), 'metric': '1', 'active': c_active }, '') ]
 
         c_file = ''
         c_match = []
@@ -327,7 +327,7 @@ def do_config(conf):
         am = re.match('^tags=(\S+)\s+seconds=(\d+)\s+message=(.+)\s*$', arg)
 
         if am:
-          file_consumer_list += [ file_consumer(c_file, c_match, { 'tags': am.group(1), 'period': am.group(2), 'message': am.group(3), 'metric': '2', 'active': c_active }) ]
+          file_consumer_list += [ file_consumer(c_file, c_match, { 'tags': am.group(1), 'period': am.group(2), 'message': am.group(3), 'metric': '2', 'active': c_active }, '') ]
 
         c_file = ''
         c_match = []
